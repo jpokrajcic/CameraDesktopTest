@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+                       xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+                       width="400" height="500">
+
+    <fx:Script><![CDATA[
+        protected var video:Video;
+        protected var camera:Camera;
+
+        [Bindable]
+        private var cameraActivationsCounter:int;
+
+        private function openCameraHandler():void
+        {
+            cameraActivationsCounter++;
+
+            // attach camera stream if camera supported
+            if(Camera.isSupported && Camera.names.length > 0){
+                video = new Video(350, 350);
+                videoHolder.addChild(video);
+
+
+                // use stream from first camera on the list
+                camera = Camera.getCamera('0');
+                camera.setMode(350, 350, 10);
+                video.attachCamera(camera);
+            }
+        }
+
+        private function closeCameraHandler():void
+        {
+            if(videoHolder.contains(video)){
+                videoHolder.removeChild(video);
+            }
+
+            if(video != null){
+                video.clear();
+                video = null;
+            }
+
+            if(camera != null){
+                camera = null;
+            }
+        }
+
+        ]]></fx:Script>
+
+    <s:Button click="openCameraHandler()" label="Open camera" top="15" horizontalCenter="-60"/>
+    <s:Button click="closeCameraHandler()" label="Close camera" horizontalCenter="60" top="15"/>
+    <s:Label text="{'Counter: ' + cameraActivationsCounter}" horizontalCenter="0" top="55"/>
+
+    <mx:UIComponent id="videoHolder" width="350" height="350" horizontalCenter="0" top="85"/>
+</s:WindowedApplication>
